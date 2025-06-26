@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.blog.payloads.UserDto;
 import com.blog.serviceImpl.UserService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @RestController
@@ -24,7 +25,7 @@ public class UserController {
 	private UserService userService;
 	
 @PostMapping("/create/user")
-public ResponseEntity<UserDto> saveUser(@RequestBody UserDto user) {
+public ResponseEntity<UserDto> saveUser(@Valid @RequestBody UserDto user) {
 	UserDto udto=userService.createUser(user);
 	return new ResponseEntity<>(udto,HttpStatus.CREATED);
 }
