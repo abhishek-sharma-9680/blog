@@ -15,7 +15,7 @@ import com.blog.userService.UserServices;
 import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Service
-public class UserService implements UserServices {
+public class UserServiceImpl implements UserServices {
 
 	private UserRepo userRepo;
 	//save method
