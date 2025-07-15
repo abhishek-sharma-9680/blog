@@ -1,11 +1,16 @@
 package com.blog.serviceImpl;
 
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.blog.entities.Category;
@@ -18,6 +23,7 @@ import com.blog.payloads.UserDto;
 import com.blog.repository.CategoryRepo;
 import com.blog.repository.PostRepository;
 import com.blog.repository.UserRepo;
+import com.blog.responses.PostPageResponse;
 import com.blog.responses.PostResponse;
 import com.blog.userService.PostService;
 
@@ -93,9 +99,13 @@ public class PostServiceImpl implements PostService {
 //=========================================--------------------------------------------------===================================	
 
 	@Override
-	public List<PostResponse> getAllPost() {
-
-		List<Post> postList = postRepo.findAll();
+	public PostPageResponse getAllPost(Integer pageNumber,Integer pageSize,String sortBy) {
+		
+	Pageable p= PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+		
+		Page<Post>pagePost = postRepo.findAll(p);
+		List<Post> postList=pagePost.getContent();
+		
 		List<PostResponse> resList = new ArrayList<>();
 		for (Post obj : postList) {
 			PostResponse response = new PostResponse();
@@ -119,8 +129,17 @@ public class PostServiceImpl implements PostService {
 
 			resList.add(response);
 		}
-
-		return resList;
+		PostPageResponse pageRes=new PostPageResponse();
+		pageRes.setContent(resList);
+		pageRes.setPageNumber(pagePost.getNumber());
+		pageRes.setPageSize(pagePost.getSize());
+		pageRes.setTotalElements(pagePost.getTotalElements());
+		pageRes.setTotalPages(pagePost.getTotalPages());
+		pageRes.setLastPage(pagePost.isLast());
+		
+		return pageRes;
+		
+		
 	}
 
 //------------------------+++++++++++++++++++++++++++++++++=======================================-----------------------++++++++++	

@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.payloads.PostDto;
+import com.blog.responses.PostPageResponse;
 import com.blog.responses.PostResponse;
 import com.blog.userService.PostService;
 
@@ -56,11 +58,13 @@ public class PostController {
 	}
 	
 //===============================================GET ALL POST=================================================================
-	@GetMapping("/getAll/post")
-	public ResponseEntity<List<PostResponse>> getAllPosts() {
-		List<PostResponse> postRes = postService.getAllPost();
+	@GetMapping("/getAll/post{pageNumber}/{pageSize}/{sortBy}")
+	public ResponseEntity<PostPageResponse> getAllPosts(@RequestParam(value="pageNumber",defaultValue="0",required=false) Integer pageNumber,
+			@RequestParam(value="pageSize",defaultValue="10",required=false) Integer pageSize,
+			@RequestParam(value="sortBy",defaultValue="postId",required=false) String sortBy) {
+		PostPageResponse postRes = postService.getAllPost(pageNumber,pageSize,sortBy);
 
-		return new ResponseEntity<List<PostResponse>>(postRes, HttpStatus.CREATED);
+		return new ResponseEntity<PostPageResponse>(postRes, HttpStatus.CREATED);
 	}
 	
 //===============================================DELETE POST BY ID=========================================================
