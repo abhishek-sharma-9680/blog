@@ -76,13 +76,13 @@ public class PostServiceImpl implements PostService {
 //=====================================--------------------------------=====================================================	
 
 	@Override
-	public PostDto updatePost(PostDto postDto, Long postId) {
+	public PostResponse updatePost(PostResponse postDto, Long postId) {
 		Post post=postRepo.findById(postId).orElseThrow(()->new ResourceNotFoundException("post", "id", postId));
 		post.setContent(postDto.getContent());
 		post.setDate(new Date());
 		post.setTitle(postDto.getTitle());
 		Post updated=postRepo.save(post);
-		PostDto postRes=new PostDto();
+		PostResponse postRes=new PostResponse();
 		BeanUtils.copyProperties(updated, postRes);
 		
 		return postRes;
@@ -237,8 +237,16 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public List<PostDto> searchPosts(String keyword) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<Post>list=postRepo.searchByKeyword(keyword);
+		
+		List<PostDto>dtoList=new ArrayList<>();
+		for(Post post:list) {
+			PostDto obj=new PostDto();
+			BeanUtils.copyProperties(post, obj);
+			dtoList.add(obj);
+		}
+		return dtoList;
 	}
 
 }

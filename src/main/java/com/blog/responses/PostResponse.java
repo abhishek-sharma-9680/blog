@@ -6,10 +6,12 @@ import com.blog.payloads.CategoryDto;
 import com.blog.payloads.UserDto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class PostResponse {
 
     private Long postId;
