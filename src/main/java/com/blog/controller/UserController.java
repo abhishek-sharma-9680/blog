@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +45,7 @@ public ResponseEntity<UserDto>updateById(@RequestBody UserDto userdto,@PathVaria
 	UserDto updatedUser=userService.updateUser(userdto, id);
 	return new ResponseEntity<>(updatedUser,HttpStatus.OK);
 }
-
+@PreAuthorize("hashRole('ADMIN')")
 @DeleteMapping("/delete/by/{id}")
 public ResponseEntity<String> deletUser(@PathVariable Long id){
 	userService.deleteUser(id);
