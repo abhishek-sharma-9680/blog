@@ -17,12 +17,17 @@ import com.blog.payloads.CategoryDto;
 //import com.blog.repository.CategoryRepo;
 import com.blog.userService.CategoryService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @RestController
+@Tag(name = "Categories APIs", description = "Endpoints for user's categories")
+
 public class CategoryController {
+	
 private CategoryService categoryService;
+
 
 @PostMapping("/create/category")
 ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto cat) {

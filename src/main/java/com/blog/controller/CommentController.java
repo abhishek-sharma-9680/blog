@@ -1,7 +1,6 @@
 package com.blog.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,10 +12,13 @@ import com.blog.payloads.ApiResponse;
 import com.blog.payloads.CommentsDto;
 import com.blog.userService.CommentService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
+@Tag(name = "Comments APIs", description = "Endpoints for user's comments")
+
 public class CommentController {
 
 	private CommentService commentService;

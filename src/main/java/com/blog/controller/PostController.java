@@ -1,9 +1,7 @@
 package com.blog.controller;
 
-import java.io.IOException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,18 +12,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.blog.payloads.PostDto;
 import com.blog.responses.PostPageResponse;
 import com.blog.responses.PostResponse;
-import com.blog.userService.FileService;
 import com.blog.userService.PostService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
+@Tag(name = "Post APIs", description = "Endpoints for user's Posts")
 
 public class PostController {
 	private PostService postService;
