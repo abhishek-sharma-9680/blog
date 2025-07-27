@@ -1,6 +1,7 @@
 package com.blog.serviceImpl;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,8 +59,8 @@ public class PostServiceImpl implements PostService {
 		post.setUser(user);
 
 		// BeanUtils.copyProperties(postDto, post);
-		post.setImageName("default.png");
-		post.setDate(new Date());
+		post.setImageName(postDto.getImageName());
+		post.setDate(LocalDateTime.now());
 		post.setContent(postDto.getContent());
 		post.setTitle(postDto.getTitle());
 
@@ -79,11 +80,31 @@ public class PostServiceImpl implements PostService {
 	public PostResponse updatePost(PostResponse postDto, Long postId) {
 		Post post=postRepo.findById(postId).orElseThrow(()->new ResourceNotFoundException("post", "id", postId));
 		post.setContent(postDto.getContent());
-		post.setDate(new Date());
+		post.setImageName(postDto.getImageName());
+		post.setDate(LocalDateTime.now());
 		post.setTitle(postDto.getTitle());
+		
+		UserDto user=new UserDto();
+		user.setId(postDto.getUser().getId());
+		user.setAbout(postDto.getUser().getAbout());
+		user.setEmail(postDto.getUser().getEmail());
+		user.setPassword(postDto.getUser().getPassword());
+		user.setName(postDto.getUser().getName());
+		
+		CategoryDto cat=new CategoryDto();
+		cat.setCategoryId(postDto.getCategory().getCategoryId());
+		cat.setCategoryDescription(postDto.getCategory().getCategoryDescription());
+		cat.setCategoryTitle(postDto.getCategory().getCategoryTitle());
+		
+		
+		
 		Post updated=postRepo.save(post);
 		PostResponse postRes=new PostResponse();
 		BeanUtils.copyProperties(updated, postRes);
+		postRes.setCategory(cat);
+		postRes.setUser(user);
+		postRes.setDate(LocalDateTime.now());
+		
 		
 		return postRes;
 	}

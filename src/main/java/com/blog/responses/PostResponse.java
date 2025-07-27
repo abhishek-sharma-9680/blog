@@ -1,5 +1,6 @@
 package com.blog.responses;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.blog.payloads.CategoryDto;
@@ -22,7 +23,7 @@ public class PostResponse {
 
     private String imageName;
 
-    private Date date;
+    private LocalDateTime date;
 
     private CategoryDto category;
 

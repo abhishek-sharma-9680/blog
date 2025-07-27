@@ -1,7 +1,7 @@
 package com.blog.entities;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -12,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -37,7 +36,7 @@ public class Post {
 
 	private String imageName;
 
-	private Date date;
+	private LocalDateTime date;
 
 	@ManyToOne
 	@JoinColumn(name="category_id")

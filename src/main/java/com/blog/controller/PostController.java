@@ -1,9 +1,14 @@
 package com.blog.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,27 +17,44 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.blog.payloads.PostDto;
 import com.blog.responses.PostPageResponse;
 import com.blog.responses.PostResponse;
+import com.blog.userService.FileService;
 import com.blog.userService.PostService;
 
+
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@AllArgsConstructor
 @Tag(name = "Post APIs", description = "Endpoints for user's Posts")
 
 public class PostController {
 	private PostService postService;
 	
 
-//	private FileService fileService;
-//    
-//	@Value("${project.image}")
-//	private String path;
+	private FileService fileService;
+ 
+	@Value("${project.image}")
+    private String path;
+	
+	
+	    public PostController(PostService postService, FileService fileService) {
+	        this.postService = postService;
+	        this.fileService = fileService;
+	    }
+
+	
+	
+	
+	
 //========================================CREATE POST=====================================================================
 	@PostMapping("/create/post")
 	public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto) {
@@ -98,18 +120,32 @@ public class PostController {
 		return new ResponseEntity<List<PostDto>>(postDto, HttpStatus.CREATED);
 	}
 //==================================================== POST IMAGE UPLOAD ===================================================
-//	
-//	@PostMapping("/post/image/upload/{postId}")
-//	public ResponseEntity<PostResponse> uploadPostImage(@RequestParam("image") MultipartFile image,
-//			                                       @PathVariable Long postId) throws IOException {
-//		 PostResponse postDto=postService.getPostById(postId);
-//       String fileName=fileService.uploadImage(path, image);
-//      
-//       postDto.setImageName(fileName);
-//       PostResponse updatePost=postService.updatePost(postDto, postId);
-//		
-//		return new ResponseEntity<PostResponse>(updatePost, HttpStatus.OK);
-//	}
-
 	
+	@Operation(summary = "Upload image for post")
+	@ApiResponses({
+	    @ApiResponse(responseCode = "200", description = "Image uploaded"),
+	    @ApiResponse(responseCode = "400", description = "Bad request")
+	})
+	@PostMapping(value = "/image/upload/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PostResponse> uploadPostImage(
+            @RequestParam("image") MultipartFile image,
+            @PathVariable Long postId
+    ) throws IOException {
+
+		PostResponse postRes = postService.getPostById(postId);
+        String fileName = fileService.uploadImage(path, image);
+
+        postRes.setImageName(fileName);
+        PostResponse updatedPost = postService.updatePost(postRes, postId);
+
+        return new ResponseEntity<>(updatedPost, HttpStatus.OK);
+    }
+
+    // Serve image
+    @GetMapping(value = "/image/{imageName}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public void downloadImage(@PathVariable String imageName, HttpServletResponse response) throws IOException {
+        InputStream resource = fileService.getResource(path, imageName);
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        StreamUtils.copy(resource, response.getOutputStream());
+    }
 }

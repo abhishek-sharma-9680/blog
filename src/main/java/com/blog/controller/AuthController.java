@@ -28,6 +28,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth/") // Better to be consistent with `/api/**` pattern
+
 @Tag(name = "Authentication APIs", description = "Endpoints for user registration and login")
 
 public class AuthController {
